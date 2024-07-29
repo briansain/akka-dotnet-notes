@@ -7,8 +7,8 @@ These are my notes/knowledge while learning and working with Akka .Net since 202
   - [What is Akka .Net?](#what-is-akka-net)
   - [What is an actor system](#what-is-an-actor-system)
   - [Actor Hierarchy](#actor-hierarchy)
-    - [Supervision](#supervision)
     - [ActorSelection](#actorselection)
+    - [Supervision](#supervision)
   - [Types of Actors](#types-of-actors)
     - [UntypedActor](#untypedactor)
     - [ReceiveActor](#receiveactor)
@@ -47,23 +47,26 @@ For example, you're building an online shopping cart. Here are some actors that 
   - **WarehouseActor**
     - Can be N number of actor's that represent a specific warehouse at a specific location
 
-[![Actor Hierarchy](actor_user_hierarchy.png)](https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000)
+![Actor Hierarchy With Routes](./actor_hierarchy_with_routes.png)
 
 ## Actor Hierarchy 
 
 As you can see in the example above, an actor can have children, and their children can have children. All of the actors that you'll create will be under the `/user` branch. The internal akka system creates its own actors under `/system`, and they can mostly be ignored by the implementation actors. 
+
+### ActorSelection 
+
+In order to send messages to different actors, you'll need to know their address within the system. There's 2 main ways to do that, pass in the IActorRef object reference to the constructor of the actor via dependency injection, or query for the IActorRef with the target actor's route. Only the actors on the `/user` branch are queryable. You can use either the relative path from the current actor, or the absolute path. When initializing the actor, a name is required, which is it's endpoint within the actor system. If the actor represents an instance of an object, then the name will need to include some unique identifier for that actor, like a primary key. 
+
+- Customer ABCD => `/user/user-abcd`
+- Warehouse EFGH => `/user/warehouse-manager/warehouse-efgh`
+
+The ActorManager is a pattern where a type of instance actors have a parent that controls their creation, message forwarding, and supervision. When using the ActorManager, messages from other actors are sent to the manager instead of the actor itself. This means that the message will need to include a primary key or some unique identifier so the manager knows which actor to deliver the message to. The ActorManager is useful because the IActorRef of the manager can be inserted via dependency injection, and it give you a little bit more control. There are different parts of Akka .Net internals that use the ActorManager pattern. 
 
 ### Supervision
 
 A parent actor will supervise their children. That means if/when a child actor throws an exception, the parent will be made aware of it. During initialization, the parent will set a `SupervisionStrategy` and will determine if the child actor should be resumed, restarted, stopped, or the parent can throw the same exception. The action taken can change based on the type of exception that is thrown. If it's a known/expected exception, then the child could just resume. If it's an unknown/unexpected error, then maybe restart the child because it's internal state is unstable.
 
 If the parent throws the exception, then it'll go to the "grandparent" of the original actor, or the parent of the parent. The specific `SupervisorStrategy` that is used is important, so you'll need to determine if the default values are good enough.
-
-### ActorSelection 
-
-
-
-
 
 ## Types of Actors
 
