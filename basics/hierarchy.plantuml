@@ -1,0 +1,23 @@
+@startuml
+component "Root ('/')" as root
+component "User ('/user')" as user
+component "Internal Akka System ('/sys')" as sys
+component "CustomerActor ('/customer-abcd')" as user1
+component "CustomerActor ('/customer-<some identifier>')" as user2
+component "ShoppingCartActor ('/shopping-cart')" as shop1
+component "ShoppingCartActor ('/shopping-cart')" as shop2
+component "WarehouseManagerActor ('/warehouse-manager')" as wma
+component "WarehouseActor ('/warehouse-efgh')" as wa1
+component "WarehouseActor ('/warehouse-<some identifier>')" as wa2
+
+root --> user
+root --> sys
+user --> user1
+user --> user2
+user1 --> shop1
+user2 --> shop2
+user --> wma
+wma --> wa1
+wma --> wa2
+
+@enduml
