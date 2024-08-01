@@ -1,3 +1,0 @@
-# Akka.Cluster
-
-TBD

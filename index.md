@@ -1,3 +1,4 @@
+
 # Welcome!!
 
 Hail and well met! My name is Brian Sain, and I'm a Senior Software Engineer at SignifyHealth. I'm a full stack developer who likes to learn and then teach new technologies. I've been a developer since 2013 and I've worked on a wide range of different applications. My goal for sharing these notes is to make different technologies more accessible for others, but specifically developers trying to learn a new language, architecture, framework, or whatever. There is never a one-size fits all model in the world of development, and the more we know the better we can be. 

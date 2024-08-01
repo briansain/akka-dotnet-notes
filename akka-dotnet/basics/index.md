@@ -1,12 +1,13 @@
 # Introduction to Akka .Net
 
-These pages are to help give a base knowledge of Akka .Net, and I try to use real-world example where I can. My goal is to give you a crash-course in Akka .Net so you can start developing soon.
+These are my notes/knowledge while learning and working with Akka .Net since 2020. These pages are to help give a base knowledge of Akka .Net, and I try to use real-world example where I can. My goal is to make Akka .Net as accessible as possible, and when I was first learning I had trouble seeing the big picture/overview of what Akka .Net is. This page will give you a good baseline of the Akka .Net system. These are intended to be open-source notes, built with the community in mind. Feel free to make suggestions or edits, or open issues if you seek more clarification or knowledge on a specific topic. 
 
 **Table of Contents**
 - [Introduction to Akka .Net](#introduction-to-akka-net)
   - [What is Akka .Net?](#what-is-akka-net)
   - [What is an actor system](#what-is-an-actor-system)
   - [Actor Hierarchy](#actor-hierarchy)
+    - [ActorSelection](#actorselection)
     - [Supervision](#supervision)
   - [Types of Actors](#types-of-actors)
     - [UntypedActor](#untypedactor)
@@ -22,7 +23,10 @@ These pages are to help give a base knowledge of Akka .Net, and I try to use rea
 
 ## What is Akka .Net?
 
-Akka .Net is a framework that can be used to create distributed systems that are easily scalable and resilient. There are a lot of different industries that use akka .net: finance, healthcare, gaming, gambling, stock trading, and more. Akka .Net is an actor system, which does require a learning curve to get started, but easily understood. Akka .Net specifically is an open source port of the Akka project (built in scala) build for C# and F# projects, maintained by Petabridge. The main documentation can be found at [https://getakka.net](https://getakka.net/index.html).
+Akka .Net is a framework that can be used on top of C# and F# projects to create distributed systems that are easily scalable and resilient. There are a lot of different industries that use akka .net: finance, healthcare, gaming, gambling, stock trading, and more. Akka .Net is an actor system, which does require a learning curve to get started, but easily understood. 
+
+Akka .Net specifically is a dotnet port of the Akka project (built in scala). Akka .Net is an open source repository and maintained by the community and Petabridge. The main documentation can be found at [https://getakka.net](https://getakka.net/index.html).
+
 
 ## What is an actor system
 
@@ -43,11 +47,20 @@ For example, you're building an online shopping cart. Here are some actors that 
   - **WarehouseActor**
     - Can be N number of actor's that represent a specific warehouse at a specific location
 
-[![Actor Hierarchy](actor_user_hierarchy.png)](https://www.plantuml.com/plantuml/uml/SyfFKj2rKt3CoKnELR1Io4ZDoSa70000)
+![Actor Hierarchy With Routes](./actor_hierarchy_with_routes.png)
 
 ## Actor Hierarchy 
 
 As you can see in the example above, an actor can have children, and their children can have children. All of the actors that you'll create will be under the `/user` branch. The internal akka system creates its own actors under `/system`, and they can mostly be ignored by the implementation actors. 
+
+### ActorSelection 
+
+In order to send messages to different actors, you'll need to know their address within the system. There's 2 main ways to do that, pass in the IActorRef object reference to the constructor of the actor via dependency injection, or query for the IActorRef with the target actor's route. Only the actors on the `/user` branch are queryable. You can use either the relative path from the current actor, or the absolute path. When initializing the actor, a name is required, which is it's endpoint within the actor system. If the actor represents an instance of an object, then the name will need to include some unique identifier for that actor, like a primary key. 
+
+- Customer ABCD => `/user/user-abcd`
+- Warehouse EFGH => `/user/warehouse-manager/warehouse-efgh`
+
+The ActorManager is a pattern where a type of instance actors have a parent that controls their creation, message forwarding, and supervision. When using the ActorManager, messages from other actors are sent to the manager instead of the actor itself. This means that the message will need to include a primary key or some unique identifier so the manager knows which actor to deliver the message to. The ActorManager is useful because the IActorRef of the manager can be inserted via dependency injection, and it give you a little bit more control. There are different parts of Akka .Net internals that use the ActorManager pattern. 
 
 ### Supervision
 
