@@ -12,7 +12,6 @@ These are my notes/knowledge while learning and working with Akka .Net since 202
   - [Types of Actors](#types-of-actors)
     - [UntypedActor](#untypedactor)
     - [ReceiveActor](#receiveactor)
-    - [Actor Lifecycle](#actor-lifecycle)
   - [Messages and Mailboxes](#messages-and-mailboxes)
     - [Ask vs Tell](#ask-vs-tell)
     - [Mailboxes](#mailboxes)
@@ -114,8 +113,6 @@ public void HandleUnsupportedTypes(object msg)
 }
 ```
 
-### Actor Lifecycle
-
 ## Messages and Mailboxes
 
 Unlike an actor, there is nothing "special" that makes an object a message. A message can be anything from a string, int, double, object, etc. No inheritance is required like an actor, and there's not a limitation from what I've found. 
@@ -157,7 +154,6 @@ An actor's mailbox is just a queue that holds messages until the actor is ready 
 The mailbox is maintained by the internal actor system, so we just need to worry about how the actor processes the messages. You can also override and create your own mailbox, but usually that's not necessary. That only depends if you want to process a specific received message immediately when it's received, i.e. the [UnboundPriorityMailbox](https://getakka.net/articles/actors/mailboxes.html#unboundedprioritymailbox)
 
 ### Smaller is Better
-
 
 For example, if you're building a warehouse system and a new invoice came in, instead of including each product in a big list, it is a better practice to just get the primary keys and then get the data you need:
 
